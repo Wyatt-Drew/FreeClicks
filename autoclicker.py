@@ -1,4 +1,6 @@
 import tkinter as tk
+from tkinter import ttk  # For a better looking Label widget on some platforms
+from PIL import Image, ImageTk  # For image processing
 from time import sleep, time
 import threading
 import pyautogui
@@ -11,14 +13,30 @@ events = []
 
 # GUI setup
 root = tk.Tk()
-root.title("Simple Autoclicker with Record & Playback")
+root.title("FreeClicks")
 
-# Load icons for buttons
-start_icon = tk.PhotoImage(file='./assets/start.png')
-stop_icon = tk.PhotoImage(file='./assets/stop.png')
-record_icon = tk.PhotoImage(file='./assets/logo.png')
-stop_record_icon = tk.PhotoImage(file='./assets/logo.png')
-playback_icon = tk.PhotoImage(file='./assets/logo.png')
+# Load and resize your logo image
+logo_image = Image.open('./assets/logo.png') 
+logo_image = logo_image.resize((100, 100), Image.Resampling.LANCZOS)  
+logo_photo = ImageTk.PhotoImage(logo_image)
+
+# Display the logo at the top of the window
+logo_label = tk.Label(root, image=logo_photo)
+logo_label.pack(pady=10)  # Adjust padding as needed
+
+# Function to load and resize icons
+def load_icon(path, size=(50, 50)):  
+    image = Image.open(path)
+    image = image.resize(size, Image.Resampling.LANCZOS)  
+    return ImageTk.PhotoImage(image)
+
+# Load icons for buttons with new sizes
+start_icon = load_icon('./assets/start.png')
+stop_icon = load_icon('./assets/stop.png')
+record_icon = load_icon('./assets/record.png')
+stop_record_icon = load_icon('./assets/stop-record.png')
+playback_icon = load_icon('./assets/delete.png')
+
 
 interval = tk.DoubleVar(value=2)  # Default click interval in seconds
 
@@ -66,7 +84,7 @@ def stop_recording():
 
 def on_click(x, y, button, pressed):
     """Handles mouse click events."""
-    if recording and pressed:  # Record only press events to simplify
+    if recording and pressed:  
         events.append(('click', x, y, button, pressed, time()))
         update_listbox(f"Click at ({x}, {y})")
 
@@ -129,7 +147,7 @@ stop_record_button.pack(side=tk.LEFT, padx=2)
 playback_button = tk.Button(button_frame, image=playback_icon, command=playback)
 playback_button.pack(side=tk.LEFT, padx=2)
 
-# Add a listbox to display recorded events, placed below the button frame
+# Listbox of events
 events_frame = tk.Frame(root)
 events_frame.pack(pady=10)
 events_listbox = tk.Listbox(events_frame, width=50, height=10)
