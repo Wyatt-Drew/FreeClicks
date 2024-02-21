@@ -8,9 +8,6 @@ def main():
     root.title("FreeClicks")
     icon_image = tk.PhotoImage(file='./assets/logo_small.png')
     root.iconphoto(True, icon_image)
-
-
-
     setup_ui()
 
     root.mainloop()

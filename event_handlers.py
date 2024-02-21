@@ -50,3 +50,11 @@ def clear_macro():
     if global_state.events_listbox:
         global_state.events_listbox.delete(0, 'end')
     print("Macro cleared.")
+
+def toggle_to_simple_autoclicker():
+    global_state.advanced_ui_frame.pack_forget()
+    global_state.simple_ui_frame.pack(side='top', fill='both', expand=True, padx=5, pady=5)
+
+def toggle_to_macro_ui():
+    global_state.simple_ui_frame.pack_forget()
+    global_state.advanced_ui_frame.pack(side='top', fill='both', expand=True, padx=5, pady=5)

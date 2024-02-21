@@ -10,6 +10,8 @@ class GlobalState:
         self.recording = False
         self.playback_running = False
         self.current_event_index = 0
+        self.simple_ui_frame = None
+        self.advanced_ui_frame = None
 
     def initialize_tkinter_variables(self, root):
         self.root = root
