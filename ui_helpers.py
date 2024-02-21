@@ -37,33 +37,51 @@ def setup_ui():
     """
     # Assuming global_state.root is your Tkinter root window
     root = global_state.root
+    root.minsize(500, 500)
 
     # Create a frame for the buttons
     button_frame = tk.Frame(root)
     button_frame.pack(pady=20, padx=20, fill=tk.X)
 
     # Load icons and create buttons
-    start_icon = load_icon('./assets/start.png')
-    stop_icon = load_icon('./assets/stop.png')
     record_icon = load_icon('./assets/record.png')
     stop_record_icon = load_icon('./assets/stop-record.png')
-    playback_icon = load_icon('./assets/playback.png')
-    clear_macro_icon = load_icon('./assets/clear.png')  # Assuming you have a clear icon
+    clear_macro_icon = load_icon('./assets/clear.png') 
 
-    start_button = tk.Button(button_frame, image=start_icon, command=start_autoclicker)
-    stop_button = tk.Button(button_frame, image=stop_icon, command=stop_autoclicker)
+    start_icon = load_icon('./assets/start.png')
+    pause_icon = load_icon('./assets/pause.png')
+    stop_icon = load_icon('./assets/stop.png')
+    
+    
+    
+    
+
+
+    #Recording Options
     record_button = tk.Button(button_frame, image=record_icon, command=start_recording)
     stop_record_button = tk.Button(button_frame, image=stop_record_icon, command=stop_recording)
-    playback_button = tk.Button(button_frame, image=playback_icon, command=play_macro)
     clear_macro_button = tk.Button(button_frame, image=clear_macro_icon, command=clear_macro)
+    #Playback options
+
+
+    start_button = tk.Button(button_frame, image=start_icon, command=start_autoclicker)
+    pause_button = tk.Button(button_frame, image=pause_icon, command=play_macro)
+    stop_button = tk.Button(button_frame, image=stop_icon, command=stop_autoclicker)
+    
+    
+    
 
     # Pack the buttons into the button frame
-    start_button.pack(side=tk.LEFT)
-    stop_button.pack(side=tk.LEFT)
+    # recording options
     record_button.pack(side=tk.LEFT)
     stop_record_button.pack(side=tk.LEFT)
-    playback_button.pack(side=tk.LEFT)
+    
     clear_macro_button.pack(side=tk.LEFT)
+    #Playback options
+    
+    stop_button.pack(side=tk.RIGHT)
+    pause_button.pack(side=tk.RIGHT)
+    start_button.pack(side=tk.RIGHT)
 
     # Ensure the buttons retain a reference to their images
     for widget in button_frame.winfo_children():
