@@ -6,10 +6,10 @@ def main():
     root = tk.Tk()
     global_state.initialize_tkinter_variables(root)  # Initialize Tkinter variables
     root.title("FreeClicks")
+    icon_image = tk.PhotoImage(file='./assets/logo_small.png')
+    root.iconphoto(True, icon_image)
 
-    logo_photo = load_icon('./assets/logo.png', (100, 100))
-    logo_label = tk.Label(root, image=logo_photo)
-    logo_label.pack(pady=10)
+
 
     setup_ui()
 
