@@ -14,3 +14,10 @@ def start_autoclicker():
 
 def stop_autoclicker():
     global_state.running = False
+def start_autoclicker():
+    # Implementation
+    pass
+
+def stop_autoclicker():
+    # Implementation
+    pass
