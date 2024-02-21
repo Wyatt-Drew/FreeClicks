@@ -1,7 +1,7 @@
 import tkinter as tk
 from PIL import Image, ImageTk
 from globals import global_state
-from event_handlers import start_recording, stop_recording, play_macro, stop_macro, clear_macro, toggle_to_macro_ui
+from event_handlers import start_recording, stop_recording, play_macro, stop_macro, clear_macro, toggle_to_macro_ui, toggle_to_simple_autoclicker
 from auto_clicker import start_autoclicker, stop_autoclicker
 
 
@@ -90,6 +90,12 @@ def setup_advanced_autoclicker_ui():
     action_frame.pack(side='top', fill='both', expand=True, padx=5, pady=5)
     action_text = tk.Text(action_frame)
     action_text.pack(fill='both', expand=True, padx=10, pady=10)
+
+    #Toggle button
+    footer_frame = tk.Frame(main_frame, bg = 'purple')
+    footer_frame.pack(side='bottom', fill='x', expand=False, padx=5, pady=5) 
+    toggle_button = tk.Button(footer_frame, text="Toggle to simple autoclicker", command=toggle_to_simple_autoclicker)
+    toggle_button.pack() 
 
     # Ensure the buttons retain a reference to their images
     for widget in [record_button, stop_record_button, clear_macro_button, start_button, pause_button, stop_button]:
