@@ -9,6 +9,7 @@ class GlobalState:
         self.events = []
         self.recording = False
         self.playback_running = False
+        self.running = False  
         self.current_event_index = 0
         self.simple_ui_frame = None
         self.advanced_ui_frame = None
@@ -17,7 +18,6 @@ class GlobalState:
         self.root = root
         self.loop_macro = tk.BooleanVar(self.root, value=False)
         self.interval = tk.DoubleVar(self.root, value=0.5)
-        # Any additional Tkinter variable initialization should go here
 
 # Initialize the global state;
 global_state = GlobalState()

@@ -5,6 +5,12 @@ import pyautogui
 from globals import global_state
 import threading
 
+def toggle_to_macro_ui():
+    global_state.simple_ui_frame.pack_forget()
+    global_state.advanced_ui_frame.pack(side='top', fill='both', expand=True, padx=5, pady=5)
+    global_state.root.minsize(500, 550)
+    global_state.root.geometry("500x550")
+
 def on_click(x, y, button, pressed):
     if global_state.recording:
         event = ('click', x, y, button, pressed, time.time())
@@ -37,12 +43,23 @@ def stop_recording():
     print("Recording stopped.")
 
 def play_macro():
-    # Logic to play back recorded events
-    print("Playing macro...")
+    if global_state.events:
+        global_state.playback_running = True
+        start_time = time.time()
+        for event in global_state.events:
+            if not global_state.playback_running:
+                break  # Allows for stopping playback mid-way
+            event_type, *args, timestamp = event
+            while time.time() < start_time + (timestamp - global_state.events[0][-1]):
+                time.sleep(0.01)  # Sleep briefly to wait for the right time to trigger the event
+            if event_type == 'click':
+                pyautogui.click(x=args[0], y=args[1])
+            elif event_type == 'press':
+                pyautogui.press(args[0])
+        global_state.playback_running = False
 
 def stop_macro():
-    # Logic to stop macro playback
-    print("Macro playback stopped.")
+    global_state.playback_running = False
 
 def clear_macro():
     # Logic to clear recorded events
@@ -51,26 +68,9 @@ def clear_macro():
         global_state.events_listbox.delete(0, 'end')
     print("Macro cleared.")
 
-def toggle_to_simple_autoclicker():
-    global_state.advanced_ui_frame.pack_forget()
-    global_state.simple_ui_frame.pack(side='top', fill='both', expand=True, padx=5, pady=5)
-    global_state.root.minsize(200, 200)
-    global_state.root.maxsize(200, 200)
-    global_state.root.geometry("200x200")
 
-def toggle_to_macro_ui():
-    global_state.simple_ui_frame.pack_forget()
-    global_state.advanced_ui_frame.pack(side='top', fill='both', expand=True, padx=5, pady=5)
-    global_state.root.minsize(500, 550)
-    global_state.root.geometry("500x550")
 
-def start_autoclicker(click_speed, stop_after_clicks, stop_after_minutes):
-    pass
 
-def start_countdown(click_speed, stop_after_clicks, stop_after_minutes, button, count=3):
-    if count > 0:
-        button.config(text=f"Start {count}")
-        global_state.root.after(1000, start_countdown, click_speed, stop_after_clicks, stop_after_minutes, button, count-1)
-    else:
-        button.config(text="Start")
-        start_autoclicker(click_speed, stop_after_clicks, stop_after_minutes)
+
+
+

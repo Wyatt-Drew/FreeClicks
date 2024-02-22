@@ -1,8 +1,8 @@
 import tkinter as tk
 from PIL import Image, ImageTk
 from globals import global_state
-from event_handlers import start_recording, stop_recording, play_macro, stop_macro, clear_macro, toggle_to_macro_ui, toggle_to_simple_autoclicker
-from auto_clicker import start_autoclicker, stop_autoclicker
+from simple_autoclicker_event_handlers import toggle_to_simple_autoclicker, start_autoclicker, start_countdown, stop_autoclicker
+from advanced_autoclicker_event_handlers import start_recording, stop_recording, play_macro, stop_macro, clear_macro, toggle_to_macro_ui
 
 
 
@@ -138,7 +138,7 @@ def setup_simple_autoclicker_ui():
     # Play and Stop buttons
     button_frame = tk.Frame(main_frame)
     button_frame.pack(side=tk.TOP)
-    play_button = tk.Button(button_frame, text="Start", command=lambda: start_autoclicker(click_speed_var.get(), stop_after_clicks_var.get(), stop_after_minutes_var.get()))
+    play_button = tk.Button(button_frame, text="Start", command=lambda: start_countdown(click_speed_var.get(), stop_after_clicks_var.get(), stop_after_minutes_var.get(), play_button))
     stop_button = tk.Button(button_frame, text="Stop", command=stop_autoclicker)
     play_button.pack(side=tk.LEFT, pady=2)
     stop_button.pack(side=tk.LEFT, pady=2)
