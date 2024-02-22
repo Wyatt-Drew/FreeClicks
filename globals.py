@@ -8,6 +8,8 @@ class GlobalState:
         self.events_listbox = None
         self.events = []
         self.recording = False
+        self.mouse_listener = None
+        self.keyboard_listener = None
         self.playback_running = False
         self.running = False  
         self.current_event_index = 0

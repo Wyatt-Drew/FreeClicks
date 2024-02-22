@@ -4,6 +4,7 @@ import time
 import pyautogui
 from globals import global_state
 import threading
+import tkinter as tk
 
 def toggle_to_macro_ui():
     global_state.simple_ui_frame.pack_forget()
@@ -11,14 +12,43 @@ def toggle_to_macro_ui():
     global_state.root.minsize(500, 550)
     global_state.root.geometry("500x550")
 
+def start_recording():
+    # Logic to start recording events
+    global_state.recording = True
+     # Start Mouse Listener
+    global_state.mouse_listener = MouseListener(on_click=on_click)
+    global_state.mouse_listener.start()
+    
+    # Start Keyboard Listener
+    global_state.keyboard_listener = KeyboardListener(on_press=on_press)
+    global_state.keyboard_listener.start()
+    print("Recording started...")
+
+def stop_recording():
+    # Stop recording events
+    global_state.recording = False
+    print("Recording stopped.")
+    
+    # Stop Listeners
+    if hasattr(global_state, 'mouse_listener'):
+        global_state.mouse_listener.stop()
+    if hasattr(global_state, 'keyboard_listener'):
+        global_state.keyboard_listener.stop()
+
+
+
 def on_click(x, y, button, pressed):
+    
     if global_state.recording:
+        
         event = ('click', x, y, button, pressed, time.time())
         global_state.events.append(event)
         # Assuming update_listbox function updates the UI listbox with new events
         update_listbox(f"Click at ({x}, {y})")
 
+
 def on_press(key):
+    print("pressed")
     try:
         key_char = key.char
     except AttributeError:
@@ -29,18 +59,14 @@ def on_press(key):
         update_listbox(f"Key press: {key_char}")
 
 def update_listbox(text):
+    print("clicked")
     if global_state.events_listbox:
+        
         global_state.events_listbox.insert(tk.END, text)
 
-def start_recording():
-    # Logic to start recording events
-    global_state.recording = True
-    print("Recording started...")
 
-def stop_recording():
-    # Logic to stop recording events
-    global_state.recording = False
-    print("Recording stopped.")
+
+
 
 def play_macro():
     if global_state.events:
