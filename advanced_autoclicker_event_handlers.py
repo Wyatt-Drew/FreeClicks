@@ -12,6 +12,11 @@ def toggle_to_macro_ui():
     global_state.root.minsize(500, 550)
     global_state.root.geometry("500x550")
 
+def clear_macro():
+    global_state.events.clear()
+    if global_state.events_listbox:
+        global_state.events_listbox.delete(0, 'end')
+
 def start_recording():
     # Logic to start recording events
     global_state.recording = True
@@ -35,20 +40,13 @@ def stop_recording():
     if hasattr(global_state, 'keyboard_listener'):
         global_state.keyboard_listener.stop()
 
-
-
 def on_click(x, y, button, pressed):
-    
     if global_state.recording:
-        
         event = ('click', x, y, button, pressed, time.time())
         global_state.events.append(event)
-        # Assuming update_listbox function updates the UI listbox with new events
         update_listbox(f"Click at ({x}, {y})")
 
-
 def on_press(key):
-    print("pressed")
     try:
         key_char = key.char
     except AttributeError:
@@ -59,12 +57,8 @@ def on_press(key):
         update_listbox(f"Key press: {key_char}")
 
 def update_listbox(text):
-    print("clicked")
     if global_state.events_listbox:
-        
         global_state.events_listbox.insert(tk.END, text)
-
-
 
 
 
@@ -87,12 +81,8 @@ def play_macro():
 def stop_macro():
     global_state.playback_running = False
 
-def clear_macro():
-    # Logic to clear recorded events
-    global_state.events.clear()
-    if global_state.events_listbox:
-        global_state.events_listbox.delete(0, 'end')
-    print("Macro cleared.")
+def pause_macro():
+    pass
 
 
 
