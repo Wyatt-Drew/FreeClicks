@@ -63,3 +63,14 @@ def toggle_to_macro_ui():
     global_state.advanced_ui_frame.pack(side='top', fill='both', expand=True, padx=5, pady=5)
     global_state.root.minsize(500, 550)
     global_state.root.geometry("500x550")
+
+def start_autoclicker(click_speed, stop_after_clicks, stop_after_minutes):
+    pass
+
+def start_countdown(click_speed, stop_after_clicks, stop_after_minutes, button, count=3):
+    if count > 0:
+        button.config(text=f"Start {count}")
+        global_state.root.after(1000, start_countdown, click_speed, stop_after_clicks, stop_after_minutes, button, count-1)
+    else:
+        button.config(text="Start")
+        start_autoclicker(click_speed, stop_after_clicks, stop_after_minutes)
