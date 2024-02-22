@@ -33,9 +33,7 @@ def setup_ui():
 def setup_advanced_autoclicker_ui():
     global advanced_ui_frame
     root = global_state.root
-    root.minsize(500, 500)
     
-
     # Main frame to hold all elements
     main_frame = tk.Frame(root)
     main_frame.pack(pady=20, padx=20, fill=tk.BOTH, expand=True)
@@ -111,28 +109,42 @@ def setup_simple_autoclicker_ui():
     main_frame.pack(pady=20, padx=20, fill=tk.BOTH, expand=True)
     global_state.simple_ui_frame = main_frame
 
-    # Play and Stop buttons
-    play_button = tk.Button(main_frame, text="Play", command=lambda: start_autoclicker(click_speed_var.get(), stop_after_clicks_var.get(), stop_after_minutes_var.get()))
-    stop_button = tk.Button(main_frame, text="Stop", command=stop_autoclicker)
-    play_button.pack(side=tk.TOP, pady=2)
-    stop_button.pack(side=tk.TOP, pady=2)
-
     # Click Speed Entry
-    tk.Label(main_frame, text="Click Speed (ms):").pack(side=tk.TOP)
-    click_speed_var = tk.StringVar()
-    click_speed_entry = tk.Entry(main_frame, textvariable=click_speed_var)
-    click_speed_entry.pack(side=tk.TOP, pady=2)
+    click_speed_frame = tk.Frame(main_frame)
+    click_speed_frame.pack(side=tk.TOP, fill='x')
+    tk.Label(click_speed_frame, text="Click Speed (ms):").pack(side=tk.LEFT)
+    click_speed_var = tk.IntVar(value=1000)
+    click_speed_entry = tk.Entry(click_speed_frame, textvariable=click_speed_var)
+    click_speed_entry.pack(side=tk.LEFT, padx=5)
 
-    # Stop After (Clicks and Minutes)
-    tk.Label(main_frame, text="Stop After:").pack(side=tk.TOP)
-    stop_after_clicks_var = tk.IntVar()
-    stop_after_minutes_var = tk.IntVar()
-    tk.Entry(main_frame, textvariable=stop_after_clicks_var).pack(side=tk.TOP, pady=2, fill='x')
-    tk.Entry(main_frame, textvariable=stop_after_minutes_var).pack(side=tk.TOP, pady=2, fill='x')
+    # Stop After Frame for Clicks and Minutes
+    stop_after_frame = tk.Frame(main_frame)
+    stop_after_frame.pack(side=tk.TOP, fill='x')
+    tk.Label(stop_after_frame, text="Stop After:").grid(row=0, column=0, columnspan=2)
+
+    stop_after_clicks_var = tk.IntVar(value=0)
+    stop_after_minutes_var = tk.IntVar(value=0)
+
+    # Clicks Entry
+    tk.Label(stop_after_frame, text="Clicks:").grid(row=1, column=0, sticky='w', padx=5, pady=2)
+    tk.Entry(stop_after_frame, textvariable=stop_after_clicks_var).grid(row=1, column=1, sticky='ew', padx=5, pady=2)
+
+    # Minutes Entry
+    tk.Label(stop_after_frame, text="Minutes:").grid(row=2, column=0, sticky='w', padx=5, pady=2)
+    tk.Entry(stop_after_frame, textvariable=stop_after_minutes_var).grid(row=2, column=1, sticky='ew', padx=5, pady=2)
+
+    stop_after_frame.columnconfigure(1, weight=1) 
+
+    # Play and Stop buttons
+    button_frame = tk.Frame(main_frame)
+    button_frame.pack(side=tk.TOP)
+    play_button = tk.Button(button_frame, text="Start", command=lambda: start_autoclicker(click_speed_var.get(), stop_after_clicks_var.get(), stop_after_minutes_var.get()))
+    stop_button = tk.Button(button_frame, text="Stop", command=stop_autoclicker)
+    play_button.pack(side=tk.LEFT, pady=2)
+    stop_button.pack(side=tk.LEFT, pady=2)
 
     # Button to switch to macro
     switch_to_macro_button = tk.Button(main_frame, text="Switch to Macro", command=toggle_to_macro_ui)
     switch_to_macro_button.pack(side=tk.TOP, pady=20)
-
 
 

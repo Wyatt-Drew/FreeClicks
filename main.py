@@ -1,5 +1,5 @@
 import tkinter as tk
-from ui_helpers import setup_ui, load_icon
+from ui_helpers import setup_ui, load_icon, toggle_to_macro_ui
 from globals import global_state
 
 def main():
@@ -9,6 +9,7 @@ def main():
     icon_image = tk.PhotoImage(file='./assets/logo_small.png')
     root.iconphoto(True, icon_image)
     setup_ui()
+    toggle_to_macro_ui()
 
     root.mainloop()
 

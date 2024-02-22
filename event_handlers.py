@@ -54,7 +54,12 @@ def clear_macro():
 def toggle_to_simple_autoclicker():
     global_state.advanced_ui_frame.pack_forget()
     global_state.simple_ui_frame.pack(side='top', fill='both', expand=True, padx=5, pady=5)
+    global_state.root.minsize(200, 200)
+    global_state.root.maxsize(200, 200)
+    global_state.root.geometry("200x200")
 
 def toggle_to_macro_ui():
     global_state.simple_ui_frame.pack_forget()
     global_state.advanced_ui_frame.pack(side='top', fill='both', expand=True, padx=5, pady=5)
+    global_state.root.minsize(500, 550)
+    global_state.root.geometry("500x550")

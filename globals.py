@@ -19,5 +19,5 @@ class GlobalState:
         self.interval = tk.DoubleVar(self.root, value=0.5)
         # Any additional Tkinter variable initialization should go here
 
-# Initialize the global state; Tkinter variables will be initialized later.
+# Initialize the global state;
 global_state = GlobalState()
