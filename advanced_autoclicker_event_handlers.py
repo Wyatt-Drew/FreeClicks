@@ -108,9 +108,14 @@ def pause_macro(pause_button):
         # Revert the button's appearance to look "normal"
         pause_button.config(relief="raised")
 
+def save_macro():
+    print("Save Macro clicked")
 
+def save_as():
+    print("Save As clicked")
 
-
+def load_macro():
+    print("Load Macro clicked")
 
 
 

@@ -2,7 +2,7 @@ import tkinter as tk
 from PIL import Image, ImageTk
 from globals import global_state
 from simple_autoclicker_event_handlers import toggle_to_simple_autoclicker, start_countdown, stop_autoclicker
-from advanced_autoclicker_event_handlers import start_recording, stop_recording, play_macro, pause_macro, stop_macro, clear_macro, toggle_to_macro_ui
+from advanced_autoclicker_event_handlers import start_recording, stop_recording, play_macro, pause_macro, stop_macro, clear_macro, toggle_to_macro_ui, save_macro, save_as, load_macro
 
 
 
@@ -89,17 +89,28 @@ def setup_advanced_autoclicker_ui():
     main_frame.pack(pady=20, padx=20, fill=tk.BOTH, expand=True)
     global_state.advanced_ui_frame = main_frame
     
+    # Create a menubar
+    menubar = tk.Menu(root)
+    root.config(menu=menubar)
+    # Create the Options menu
+    options_menu = tk.Menu(menubar, tearoff=0)
+    menubar.add_cascade(label="Options", menu=options_menu)
+
+    # Add items to the Options menu
+    options_menu.add_command(label="Save Macro", command=save_macro)
+    options_menu.add_command(label="Save As", command=save_as)
+    options_menu.add_command(label="Load Macro", command=load_macro)
 
     # Header frame for buttons and logo, occupying minimal necessary vertical space
-    header_frame = tk.Frame(main_frame, height=50, bg='grey')
-    header_frame.pack(side='top', fill='x', padx=5, pady=5)
+    header_frame = tk.Frame(main_frame)
+    header_frame.pack(side='top', fill='x', padx=5)
 
     # Frame for the recording options
-    record_frame = tk.Frame(header_frame, bg='red')
+    record_frame = tk.Frame(header_frame)
     record_frame.pack(side='left', padx=5)
 
     # Frame for the logo and potentially other elements in the center
-    center_frame = tk.Frame(header_frame, bg='blue')
+    center_frame = tk.Frame(header_frame)
     center_frame.pack(side='left', fill='both', expand=True, padx=5)
 
     # Frame for the playback options
@@ -113,9 +124,9 @@ def setup_advanced_autoclicker_ui():
     record_button = tk.Button(record_frame, image=record_icon, command=start_recording)
     stop_record_button = tk.Button(record_frame, image=stop_record_icon, command=stop_recording)
     clear_macro_button = tk.Button(record_frame, image=clear_macro_icon, command=clear_macro)
-    record_button.pack(side=tk.LEFT, pady=2)
-    stop_record_button.pack(side=tk.LEFT, pady=2)
-    clear_macro_button.pack(side=tk.LEFT, pady=2)
+    record_button.pack(side=tk.LEFT)
+    stop_record_button.pack(side=tk.LEFT)
+    clear_macro_button.pack(side=tk.LEFT)
 
     # Playback Options Widgets
     start_icon = load_icon('./assets/start.png')
@@ -124,9 +135,9 @@ def setup_advanced_autoclicker_ui():
     start_button = tk.Button(playback_frame, image=start_icon, command=lambda:play_macro(start_button))
     pause_button = tk.Button(playback_frame, image=pause_icon, command=lambda:pause_macro(pause_button))
     stop_button = tk.Button(playback_frame, image=stop_icon, command=lambda:stop_macro(start_button))
-    start_button.pack(side=tk.LEFT, pady=2)
-    pause_button.pack(side=tk.LEFT, pady=2)
-    stop_button.pack(side=tk.LEFT, pady=2)
+    start_button.pack(side=tk.LEFT)
+    pause_button.pack(side=tk.LEFT)
+    stop_button.pack(side=tk.LEFT)
 
     # Logo in the center frame
     logo_photo = load_icon('./assets/logo.png', (50, 50))
@@ -134,7 +145,7 @@ def setup_advanced_autoclicker_ui():
     logo_label.pack(side='top', expand=True)
 
     # Action area below the header
-    action_frame = tk.Frame(main_frame, bg='orange')
+    action_frame = tk.Frame(main_frame,bg='black')
     action_frame.pack(side='top', fill='both', expand=True, padx=5, pady=5)
     action_text = tk.Listbox(action_frame)
     action_text.pack(fill='both', expand=True, padx=10, pady=10)
