@@ -43,5 +43,4 @@ def start_countdown(click_speed, stop_after_clicks, stop_after_minutes, start_bu
         start_autoclicker(click_speed, stop_after_clicks, stop_after_minutes, start_button)
 
 def stop_autoclicker():
-    print("in")
     global_state.running = False

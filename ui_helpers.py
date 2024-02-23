@@ -1,8 +1,8 @@
 import tkinter as tk
 from PIL import Image, ImageTk
 from globals import global_state
-from simple_autoclicker_event_handlers import toggle_to_simple_autoclicker, start_autoclicker, start_countdown, stop_autoclicker
-from advanced_autoclicker_event_handlers import start_recording, stop_recording, play_macro, stop_macro, clear_macro, toggle_to_macro_ui
+from simple_autoclicker_event_handlers import toggle_to_simple_autoclicker, start_countdown, stop_autoclicker
+from advanced_autoclicker_event_handlers import start_recording, stop_recording, play_macro, pause_macro, stop_macro, clear_macro, toggle_to_macro_ui
 
 
 
@@ -121,9 +121,9 @@ def setup_advanced_autoclicker_ui():
     start_icon = load_icon('./assets/start.png')
     pause_icon = load_icon('./assets/pause.png')
     stop_icon = load_icon('./assets/stop.png')
-    start_button = tk.Button(playback_frame, image=start_icon, command=start_autoclicker)
-    pause_button = tk.Button(playback_frame, image=pause_icon, command=play_macro)
-    stop_button = tk.Button(playback_frame, image=stop_icon, command=stop_autoclicker)
+    start_button = tk.Button(playback_frame, image=start_icon, command=lambda:play_macro(start_button))
+    pause_button = tk.Button(playback_frame, image=pause_icon, command=lambda:pause_macro(pause_button))
+    stop_button = tk.Button(playback_frame, image=stop_icon, command=lambda:stop_macro(start_button))
     start_button.pack(side=tk.LEFT, pady=2)
     pause_button.pack(side=tk.LEFT, pady=2)
     stop_button.pack(side=tk.LEFT, pady=2)

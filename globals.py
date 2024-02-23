@@ -12,6 +12,7 @@ class GlobalState:
         self.keyboard_listener = None
         self.playback_running = False
         self.running = False  
+        self.paused = False
         self.current_event_index = 0
         self.simple_ui_frame = None
         self.advanced_ui_frame = None

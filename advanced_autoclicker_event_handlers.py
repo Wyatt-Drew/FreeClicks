@@ -62,27 +62,51 @@ def update_listbox(text):
 
 
 
-def play_macro():
-    if global_state.events:
-        global_state.playback_running = True
-        start_time = time.time()
-        for event in global_state.events:
-            if not global_state.playback_running:
-                break  # Allows for stopping playback mid-way
-            event_type, *args, timestamp = event
-            while time.time() < start_time + (timestamp - global_state.events[0][-1]):
-                time.sleep(0.01)  # Sleep briefly to wait for the right time to trigger the event
-            if event_type == 'click':
-                pyautogui.click(x=args[0], y=args[1])
-            elif event_type == 'press':
-                pyautogui.press(args[0])
-        global_state.playback_running = False
+def play_macro(start_button):
+    def macro():
 
-def stop_macro():
+        start_button.config(relief="sunken")
+        start_button.config(state="disabled")
+        if global_state.events:
+            global_state.playback_running = True
+            start_time = time.time()
+            for event in global_state.events:
+                if not global_state.playback_running:
+                    break
+                event_type, *args, timestamp = event
+                while time.time() < start_time + (timestamp - global_state.events[0][-1]):
+                    while global_state.paused:
+                        time.sleep(0.01)
+                    if not global_state.playback_running:  # Check again in case stop was pressed during wait
+                        break
+                    time.sleep(0.01)  # Sleep briefly to wait for the right time to trigger the event
+                if not global_state.playback_running:  # Exit if playback has been stopped
+                    break
+                if event_type == 'click':
+                    pyautogui.click(x=args[0], y=args[1])
+                elif event_type == 'press':
+                    pyautogui.press(args[0])
+            global_state.playback_running = False
+        start_button.config(state="normal")
+        start_button.config(relief="raised")
+
+    threading.Thread(target=macro).start() 
+
+def stop_macro(start_button):
+    print("stopped")
     global_state.playback_running = False
+    start_button.config(state="normal")
 
-def pause_macro():
-    pass
+def pause_macro(pause_button):
+    # Toggle the paused state
+    global_state.paused = not global_state.paused
+    
+    if global_state.paused:
+        # Change the button's appearance to look "pressed"
+        pause_button.config(relief="sunken")
+    else:
+        # Revert the button's appearance to look "normal"
+        pause_button.config(relief="raised")
 
 
 
