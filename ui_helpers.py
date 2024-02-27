@@ -145,16 +145,16 @@ def setup_advanced_autoclicker_ui():
     logo_label.pack(side='top', expand=True)
 
     # Action area below the header
-    action_frame = tk.Frame(main_frame,bg='black')
+    action_frame = tk.Frame(main_frame)
     action_frame.pack(side='top', fill='both', expand=True, padx=5, pady=5)
     action_text = tk.Listbox(action_frame)
     action_text.pack(fill='both', expand=True, padx=10, pady=10)
     global_state.events_listbox = action_text
 
     #Toggle button
-    footer_frame = tk.Frame(main_frame, bg = 'purple')
+    footer_frame = tk.Frame(main_frame)
     footer_frame.pack(side='bottom', fill='x', expand=False, padx=5, pady=5) 
-    toggle_button = tk.Button(footer_frame, text="Toggle to simple autoclicker", command=toggle_to_simple_autoclicker)
+    toggle_button = tk.Button(footer_frame, text="Toggle to Simple Autoclicker", command=toggle_to_simple_autoclicker)
     toggle_button.pack() 
 
     # Ensure the buttons retain a reference to their images
