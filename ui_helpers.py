@@ -3,25 +3,33 @@ from PIL import Image, ImageTk
 from globals import global_state
 from simple_autoclicker_event_handlers import toggle_to_simple_autoclicker, start_countdown, stop_autoclicker
 from advanced_autoclicker_event_handlers import start_recording, stop_recording, play_macro, pause_macro, stop_macro, clear_macro, toggle_to_macro_ui, save_macro, save_as, load_macro
+import os
+import sys
+if getattr(sys, 'frozen', False):
+    # If so, use the `_MEIPASS` directory, where PyInstaller unpacks the bundled files
+    application_path = sys._MEIPASS
+else:
+    application_path = os.path.dirname(os.path.abspath(__file__))
+# Construct the full path to the image
 
 
-
-
-def load_icon(path, size=(32, 32)):
+def load_icon(relative_path, size=(32, 32)):
     """
     Loads an image from the specified path and resizes it to the specified size.
     Keeps a reference to the loaded image to prevent it from being garbage collected.
     """
+    # Check if the application is running as a PyInstaller bundle
+    full_path = os.path.join(application_path, relative_path)
     try:
-        image = Image.open(path)
+        image = Image.open(full_path)
         image = image.resize(size, Image.Resampling.LANCZOS)
         photo = ImageTk.PhotoImage(image)
         if not hasattr(global_state, 'images'):
             global_state.images = {}
-        global_state.images[path] = photo
+        global_state.images[full_path] = photo  # Use full_path as the key
         return photo
     except Exception as e:
-        print(f"Error loading image from {path}: {e}")
+        print(f"Error loading image from {full_path}: {e}")
         return None
 
 def setup_ui():
