@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 from PIL import Image, ImageTk
 from globals import global_state
 from simple_autoclicker_event_handlers import toggle_to_simple_autoclicker, start_countdown, stop_autoclicker
@@ -164,6 +165,29 @@ def setup_advanced_autoclicker_ui():
     footer_frame.pack(side='bottom', fill='x', expand=False, padx=5, pady=5) 
     toggle_button = tk.Button(footer_frame, text="Toggle to Simple Autoclicker", command=toggle_to_simple_autoclicker)
     toggle_button.pack() 
+
+    # Time Display Label
+    time_display_label = tk.Label(footer_frame, text="00:00:00")
+    time_display_label.pack(side='left', padx=(10, 0))
+
+    # Progress Variable
+    progress_value = tk.IntVar(value=0)  # Variable to hold the current progress
+    max_progress_value = tk.IntVar(value=100)  # Variable to hold the maximum progress value
+
+    # Add a green progress bar at the bottom
+    progress_bar = ttk.Progressbar(footer_frame, orient='horizontal', length=100, mode='determinate',
+                                   variable=progress_value, maximum=max_progress_value.get())
+    progress_bar.pack(side='left', fill='x', expand=True, padx=(5, 0))
+    # Configure the style to green
+    style = ttk.Style()
+    style.configure("green.Horizontal.TProgressbar", foreground='green', background='green')
+    progress_bar.config(style="green.Horizontal.TProgressbar")
+
+    # Progress Display Label
+    progress_display_label = tk.Label(footer_frame, text=f"{progress_value.get()}/{max_progress_value.get()}")
+    progress_display_label.pack(side='left', padx=(10, 10))
+
+
 
     # Ensure the buttons retain a reference to their images
     for widget in [record_button, stop_record_button, clear_macro_button, start_button, pause_button, stop_button]:
