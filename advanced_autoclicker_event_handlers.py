@@ -22,6 +22,7 @@ def clear_macro():
 def start_recording():
     global_state.recording = True
     global_state.start_time = time.time()
+    print(f"Recording started at {global_state.start_time}")
     global_state.mouse_listener = MouseListener(on_click=on_click)
     global_state.mouse_listener.start()
 
@@ -43,8 +44,11 @@ def stop_recording():
 def on_click(x, y, button, pressed):
     if global_state.recording:
         action = 'mousedown' if pressed else 'mouseup'
-        time_delta = time.time() - global_state.start_time 
-        event = (action, x, y, button, time_delta)
+        time_delta = time.time() - global_state.start_time
+        global_state.start_time = time.time()
+        # Convert the button to a string format compatible with pyautogui
+        button_str = str(button).split('.')[-1].lower()
+        event = (action, x, y, button_str, time_delta)
         global_state.events.append(event)
         refresh_listbox()
 
@@ -55,6 +59,7 @@ def on_press(key):
         key_char = str(key)
     if global_state.recording:
         time_delta = time.time() - global_state.start_time  
+        global_state.start_time = time.time()
         event = ('press', key_char, time_delta)
         global_state.events.append(event)
         refresh_listbox()
@@ -66,6 +71,7 @@ def on_release(key):
         key_char = str(key)
     if global_state.recording:
         time_delta = time.time() - global_state.start_time  
+        global_state.start_time = time.time()
         event = ('release', key_char, time_delta)
         global_state.events.append(event)
         refresh_listbox()
@@ -74,15 +80,7 @@ def on_release(key):
 def convert_to_readable_text(event, event_number):
     event_type = event[0]
     timestamp = event[-1]
-
-    # Calculate the time since the previous event
-    
-    if event_number == 1:
-        readable_time = f"{timestamp * 1000:.0f} ms"
-    else:
-        previous_timestamp = global_state.events[event_number - 2][-1]
-        readable_time = f"{(timestamp - previous_timestamp) * 1000:.0f} ms"
-
+    readable_time = f"{timestamp * 1000:.0f} ms"
     if event_type in ['mousedown', 'mouseup']:
         # Handle mouse down and up events
         x, y, button, pressed = event[1:5]
@@ -123,8 +121,8 @@ def play_macro(start_button):
         start_button.config(state="disabled")
         if global_state.events:
             global_state.playback_running = True
-            start_time = time.time()
             for event in global_state.events:
+                start_time = time.time()
                 if not global_state.playback_running:
                     break
                 event_type, *args, timestamp = event
@@ -136,8 +134,10 @@ def play_macro(start_button):
                     time.sleep(0.01)  # Sleep briefly to wait for the right time to trigger the event
                 if not global_state.playback_running:  # Exit if playback has been stopped
                     break
-                if event_type == 'click':
-                    pyautogui.click(x=args[0], y=args[1])
+                if event_type == 'mousedown':
+                    pyautogui.mouseDown(x=args[0], y=args[1], button=args[2])
+                elif event_type == 'mouseup':
+                    pyautogui.mouseUp(x=args[0], y=args[1], button=args[2])
                 elif event_type == 'press':
                     pyautogui.press(args[0])
             global_state.playback_running = False
