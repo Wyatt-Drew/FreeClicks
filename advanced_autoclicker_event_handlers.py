@@ -183,4 +183,11 @@ def load_macro():
         refresh_listbox()
 
 
+def delete_selected_event():
+    selection = global_state.events_listbox.curselection()
+    if selection:
+        index = selection[0]
+        del global_state.events[index]  # Delete from data
+        global_state.events_listbox.delete(index)  # Delete from listbox view
+        print(f"Event {index + 1} deleted")
 
