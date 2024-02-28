@@ -116,7 +116,7 @@ def refresh_listbox():
 
 def play_macro(start_button):
     def macro():
-
+        global_state.progress_frame.pack(side='bottom', fill='x', expand=False, padx=5, pady=5)
         start_button.config(relief="sunken")
         start_button.config(state="disabled")
         if global_state.events:
@@ -143,11 +143,13 @@ def play_macro(start_button):
             global_state.playback_running = False
         start_button.config(state="normal")
         start_button.config(relief="raised")
+        global_state.progress_frame.pack_forget()
 
     threading.Thread(target=macro).start() 
 
 def stop_macro(start_button):
     print("stopped")
+    global_state.progress_frame.pack_forget()
     global_state.playback_running = False
     start_button.config(state="normal")
 

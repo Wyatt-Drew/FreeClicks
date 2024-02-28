@@ -17,6 +17,8 @@ class GlobalState:
         self.simple_ui_frame = None
         self.advanced_ui_frame = None
         self.start_time = None
+        self.loop_state = False
+        self.progress_frame = None
 
     def initialize_tkinter_variables(self, root):
         self.root = root

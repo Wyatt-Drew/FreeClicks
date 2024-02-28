@@ -137,6 +137,10 @@ def setup_advanced_autoclicker_ui():
     stop_record_button.pack(side=tk.LEFT)
     clear_macro_button.pack(side=tk.LEFT)
 
+    # Add Loop Checkbox to the left of the start button
+    loop_checkbox = tk.Checkbutton(playback_frame, text="Loop", variable=global_state.loop_state)
+    loop_checkbox.pack(side=tk.LEFT)
+
     # Playback Options Widgets
     start_icon = load_icon('./assets/start.png')
     pause_icon = load_icon('./assets/pause.png')
@@ -166,16 +170,21 @@ def setup_advanced_autoclicker_ui():
     toggle_button = tk.Button(footer_frame, text="Toggle to Simple Autoclicker", command=toggle_to_simple_autoclicker)
     toggle_button.pack() 
 
+    #Progress bar
+    progress_frame = tk.Frame(footer_frame)
+    # progress_frame.pack(side='bottom', fill='x', expand=False, padx=5, pady=5)
+    global_state.progress_frame = progress_frame
+
     # Time Display Label
-    time_display_label = tk.Label(footer_frame, text="00:00:00")
+    time_display_label = tk.Label(progress_frame, text="00:00:00")
     time_display_label.pack(side='left', padx=(10, 0))
 
     # Progress Variable
-    progress_value = tk.IntVar(value=0)  # Variable to hold the current progress
+    progress_value = tk.IntVar(value=10)  # Variable to hold the current progress
     max_progress_value = tk.IntVar(value=100)  # Variable to hold the maximum progress value
 
     # Add a green progress bar at the bottom
-    progress_bar = ttk.Progressbar(footer_frame, orient='horizontal', length=100, mode='determinate',
+    progress_bar = ttk.Progressbar(progress_frame, orient='horizontal', length=100, mode='determinate',
                                    variable=progress_value, maximum=max_progress_value.get())
     progress_bar.pack(side='left', fill='x', expand=True, padx=(5, 0))
     # Configure the style to green
@@ -184,7 +193,7 @@ def setup_advanced_autoclicker_ui():
     progress_bar.config(style="green.Horizontal.TProgressbar")
 
     # Progress Display Label
-    progress_display_label = tk.Label(footer_frame, text=f"{progress_value.get()}/{max_progress_value.get()}")
+    progress_display_label = tk.Label(progress_frame, text=f"{progress_value.get()}/{max_progress_value.get()}")
     progress_display_label.pack(side='left', padx=(10, 10))
 
 
