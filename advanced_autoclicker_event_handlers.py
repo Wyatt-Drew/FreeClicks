@@ -162,25 +162,36 @@ def pause_macro(pause_button):
         # Revert the button's appearance to look "normal"
         pause_button.config(relief="raised")
 
-def save_macro(filename='default_macro.pkl'):
-    with open(filename, 'wb') as file:
-        pickle.dump(global_state.events, file)
+def save_macro(filename='default_macro.fclicks'):
+    with open(filename, 'w') as file:
+        for event in global_state.events:
+            line = f"{event[0]},{event[1]},{event[2]},{event[3]},{event[4]}\n"  # Format based on your event structure
+            file.write(line)
     print(f"Macro saved to {filename}")
 
 def save_as():
-    filename = filedialog.asksaveasfilename(defaultextension=".pkl",
-                                            filetypes=[("Pickle files", "*.pkl"), ("All files", "*.*")])
+    filename = filedialog.asksaveasfilename(
+        defaultextension=".fclicks",
+        filetypes=[("FClicks files", "*.fclicks"), ("All files", "*.*")],
+        initialfile='default_macro.fclicks'  # Suggests a default filename in the dialog
+    )
     if filename:
         save_macro(filename)
         print(f"Macro saved as {filename}")
 
 def load_macro():
-    filename = filedialog.askopenfilename(filetypes=[("Pickle files", "*.pkl"), ("All files", "*.*")])
+    filename = filedialog.askopenfilename(filetypes=[("FClicks files", "*.fclicks"), ("All files", "*.*")])
     if filename:
-        with open(filename, 'rb') as file:
-            global_state.events = pickle.load(file)
+        with open(filename, 'r') as file:
+            lines = file.readlines()
+            global_state.events = []
+            for line in lines:
+                parts = line.strip().split(',')  # Adjust as per your event structure
+                event = (parts[0], float(parts[1]), float(parts[2]), parts[3], float(parts[4]))
+                global_state.events.append(event)
         print(f"Macro loaded from {filename}")
         refresh_listbox()
+
 
 
 def delete_selected_event():

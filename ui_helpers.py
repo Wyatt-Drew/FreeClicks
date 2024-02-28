@@ -169,25 +169,17 @@ def setup_advanced_autoclicker_ui():
     for widget in [record_button, stop_record_button, clear_macro_button, start_button, pause_button, stop_button]:
         widget.image = widget['image']
 
-# Create a context menu for the listbox
+    # Create a context menu for the listbox
     context_menu = tk.Menu(global_state.root, tearoff=0)
     context_menu.add_command(label="Delete", command=delete_selected_event)
-
     # Function to display the context menu on right-click
     def on_right_click(event):
         try:
-            # Select the item under the cursor
             global_state.events_listbox.selection_clear(0, tk.END)
             global_state.events_listbox.selection_set(global_state.events_listbox.nearest(event.y))
             global_state.events_listbox.activate(global_state.events_listbox.nearest(event.y))
-            # Display the context menu
             context_menu.tk_popup(event.x_root, event.y_root)
         finally:
-            # Make sure the menu is closed
             context_menu.grab_release()
-
-    # Bind right-click to the listbox
     global_state.events_listbox.bind("<Button-3>", on_right_click)
-
-    # Bind the Delete key for the selected item
     global_state.root.bind('<Delete>', lambda event: delete_selected_event())
