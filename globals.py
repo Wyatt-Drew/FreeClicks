@@ -16,6 +16,7 @@ class GlobalState:
         self.current_event_index = 0
         self.simple_ui_frame = None
         self.advanced_ui_frame = None
+        self.start_time = None
 
     def initialize_tkinter_variables(self, root):
         self.root = root

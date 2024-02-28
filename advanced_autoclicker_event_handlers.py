@@ -5,6 +5,8 @@ import pyautogui
 from globals import global_state
 import threading
 import tkinter as tk
+from tkinter import filedialog
+import pickle
 
 def toggle_to_macro_ui():
     global_state.simple_ui_frame.pack_forget()
@@ -18,14 +20,12 @@ def clear_macro():
         global_state.events_listbox.delete(0, 'end')
 
 def start_recording():
-    # Logic to start recording events
     global_state.recording = True
-     # Start Mouse Listener
+    global_state.start_time = time.time()
     global_state.mouse_listener = MouseListener(on_click=on_click)
     global_state.mouse_listener.start()
-    
-    # Start Keyboard Listener
-    global_state.keyboard_listener = KeyboardListener(on_press=on_press)
+
+    global_state.keyboard_listener = KeyboardListener(on_press=on_press, on_release=on_release)
     global_state.keyboard_listener.start()
     print("Recording started...")
 
@@ -42,9 +42,11 @@ def stop_recording():
 
 def on_click(x, y, button, pressed):
     if global_state.recording:
-        event = ('click', x, y, button, pressed, time.time())
+        action = 'mousedown' if pressed else 'mouseup'
+        time_delta = time.time() - global_state.start_time 
+        event = (action, x, y, button, time_delta)
         global_state.events.append(event)
-        update_listbox(f"Click at ({x}, {y})")
+        refresh_listbox()
 
 def on_press(key):
     try:
@@ -52,15 +54,67 @@ def on_press(key):
     except AttributeError:
         key_char = str(key)
     if global_state.recording:
-        event = ('press', key_char, time.time())
+        time_delta = time.time() - global_state.start_time  
+        event = ('press', key_char, time_delta)
         global_state.events.append(event)
-        update_listbox(f"Key press: {key_char}")
+        refresh_listbox()
 
-def update_listbox(text):
+def on_release(key):
+    try:
+        key_char = key.char
+    except AttributeError:
+        key_char = str(key)
+    if global_state.recording:
+        time_delta = time.time() - global_state.start_time  
+        event = ('release', key_char, time_delta)
+        global_state.events.append(event)
+        refresh_listbox()
+
+        
+def convert_to_readable_text(event, event_number):
+    event_type = event[0]
+    timestamp = event[-1]
+
+    # Calculate the time since the previous event
+    
+    if event_number == 1:
+        readable_time = f"{timestamp * 1000:.0f} ms"
+    else:
+        previous_timestamp = global_state.events[event_number - 2][-1]
+        readable_time = f"{(timestamp - previous_timestamp) * 1000:.0f} ms"
+
+    if event_type in ['mousedown', 'mouseup']:
+        # Handle mouse down and up events
+        x, y, button, pressed = event[1:5]
+        x, y = round(x), round(y)
+        action = "down" if event_type == 'mousedown' else "up"
+        button_name = str(button).split('.')[-1]  # Extract button name
+        button_text = {
+            'left': 'Left',
+            'right': 'Right',
+            'middle': 'Middle',
+        }.get(button_name, 'Unknown') + ' button'
+        return f"{event_number} | ({x}, {y}) | {readable_time} | {button_text} {action}"
+    elif event_type in ['press', 'release']:
+        # Handle key press and release events
+        key_char = event[1]
+        action = "pressed" if event_type == 'press' else "released"
+        return f"{event_number} | Key {action}: {key_char} | {readable_time}"
+    else:
+        return f"{event_number} | Unknown Event | {readable_time}"
+
+
+
+
+def refresh_listbox():
     if global_state.events_listbox:
-        global_state.events_listbox.insert(tk.END, text)
-
-
+        #clear
+        global_state.events_listbox.delete(0, tk.END)
+        # Insert each event into the listbox
+        event_number = 1
+        for event in global_state.events:
+            global_state.events_listbox.insert(tk.END, convert_to_readable_text(event, event_number))
+            event_number+=1
 
 def play_macro(start_button):
     def macro():
@@ -108,14 +162,25 @@ def pause_macro(pause_button):
         # Revert the button's appearance to look "normal"
         pause_button.config(relief="raised")
 
-def save_macro():
-    print("Save Macro clicked")
+def save_macro(filename='default_macro.pkl'):
+    with open(filename, 'wb') as file:
+        pickle.dump(global_state.events, file)
+    print(f"Macro saved to {filename}")
 
 def save_as():
-    print("Save As clicked")
+    filename = filedialog.asksaveasfilename(defaultextension=".pkl",
+                                            filetypes=[("Pickle files", "*.pkl"), ("All files", "*.*")])
+    if filename:
+        save_macro(filename)
+        print(f"Macro saved as {filename}")
 
 def load_macro():
-    print("Load Macro clicked")
+    filename = filedialog.askopenfilename(filetypes=[("Pickle files", "*.pkl"), ("All files", "*.*")])
+    if filename:
+        with open(filename, 'rb') as file:
+            global_state.events = pickle.load(file)
+        print(f"Macro loaded from {filename}")
+        refresh_listbox()
 
 
 
