@@ -90,7 +90,7 @@ def setup_simple_autoclicker_ui():
     stop_button.pack(side=tk.LEFT, pady=2)
 
     # Button to switch to macro
-    switch_to_macro_button = tk.Button(main_frame, text="Switch to Macro", command=lambda: toggle_to_macro_ui)
+    switch_to_macro_button = tk.Button(main_frame, text="Switch to Macro", command=lambda: toggle_to_macro_ui())
     switch_to_macro_button.pack(side=tk.TOP, pady=20)
 
 
