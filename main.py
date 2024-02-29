@@ -14,6 +14,7 @@ else:
 # Construct the path to the assets directory
 assets_path = os.path.join(application_path, 'assets', 'logo_small.png')
 
+
 def main():
     root = tk.Tk()
     global_state.initialize_tkinter_variables(root)

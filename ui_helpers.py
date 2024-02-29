@@ -2,16 +2,23 @@ import tkinter as tk
 from tkinter import ttk
 from PIL import Image, ImageTk
 from globals import global_state
-from simple_autoclicker_event_handlers import toggle_to_simple_autoclicker, start_countdown, stop_autoclicker
-from advanced_autoclicker_event_handlers import update_loop_state, delete_selected_event, start_recording, stop_recording, play_macro, pause_macro, stop_macro, clear_macro, toggle_to_macro_ui, save_macro, save_as, load_macro
+from simple_autoclicker_event_handlers import  toggle_to_macro_ui, start_countdown, stop_autoclicker
+from advanced_autoclicker_event_handlers import toggle_to_simple_autoclicker, update_loop_state, delete_selected_event, start_recording, stop_recording, play_macro, pause_macro, stop_macro, clear_macro, save_macro, save_as, load_macro
+from timer import Timer
 import os
 import sys
+
+
 if getattr(sys, 'frozen', False):
     # If so, use the `_MEIPASS` directory, where PyInstaller unpacks the bundled files
     application_path = sys._MEIPASS
 else:
     application_path = os.path.dirname(os.path.abspath(__file__))
 # Construct the full path to the image
+
+
+
+
 
 
 def load_icon(relative_path, size=(32, 32)):
@@ -36,7 +43,7 @@ def load_icon(relative_path, size=(32, 32)):
 def setup_ui():
     setup_advanced_autoclicker_ui()
     setup_simple_autoclicker_ui()
-    toggle_to_macro_ui()
+    
 
 
 def setup_simple_autoclicker_ui():
@@ -83,13 +90,14 @@ def setup_simple_autoclicker_ui():
     stop_button.pack(side=tk.LEFT, pady=2)
 
     # Button to switch to macro
-    switch_to_macro_button = tk.Button(main_frame, text="Switch to Macro", command=toggle_to_macro_ui)
+    switch_to_macro_button = tk.Button(main_frame, text="Switch to Macro", command=lambda: toggle_to_macro_ui)
     switch_to_macro_button.pack(side=tk.TOP, pady=20)
 
 
 
 
 def setup_advanced_autoclicker_ui():
+    
     global advanced_ui_frame
     root = global_state.root
     
@@ -146,8 +154,8 @@ def setup_advanced_autoclicker_ui():
     start_icon = load_icon('./assets/start.png')
     pause_icon = load_icon('./assets/pause.png')
     stop_icon = load_icon('./assets/stop.png')
-    start_button = tk.Button(playback_frame, image=start_icon, command=lambda:play_macro(start_button))
-    pause_button = tk.Button(playback_frame, image=pause_icon, command=lambda:pause_macro(pause_button))
+    start_button = tk.Button(playback_frame, image=start_icon, command=lambda:play_macro(start_button, progress_value, max_progress_value, timer, progress_bar, progress_display_label))
+    pause_button = tk.Button(playback_frame, image=pause_icon, command=lambda:pause_macro(pause_button, timer))
     stop_button = tk.Button(playback_frame, image=stop_icon, command=lambda:stop_macro(start_button, pause_button))
     start_button.pack(side=tk.LEFT)
     pause_button.pack(side=tk.LEFT)
@@ -169,17 +177,19 @@ def setup_advanced_autoclicker_ui():
     footer_frame = tk.Frame(main_frame, height=50)
     footer_frame.pack(side='bottom', fill='x', expand=False, padx=5, pady=5) 
     footer_frame.pack_propagate(False)
-    toggle_button = tk.Button(footer_frame, text="Toggle to Simple Autoclicker", command=toggle_to_simple_autoclicker)
+    toggle_button = tk.Button(footer_frame, text="Toggle to Simple Autoclicker", command=lambda: toggle_to_simple_autoclicker(start_button, pause_button))
     toggle_button.pack() 
 
     #Progress bar
     progress_frame = tk.Frame(footer_frame)
-    # progress_frame.pack(side='bottom', fill='x', expand=False, padx=5, pady=5)
     global_state.progress_frame = progress_frame
 
     # Time Display Label
     time_display_label = tk.Label(progress_frame, text="00:00:00")
     time_display_label.pack(side='left', padx=(10, 0))
+    global_state.time_display_label = time_display_label
+    # Instantiate Timer
+    timer = Timer(lambda elapsed_str: global_state.root.after(0, lambda: global_state.time_display_label.config(text=elapsed_str)))
 
     # Progress Variable
     progress_value = tk.IntVar(value=10)  # Variable to hold the current progress
@@ -218,3 +228,6 @@ def setup_advanced_autoclicker_ui():
             context_menu.grab_release()
     global_state.events_listbox.bind("<Button-3>", on_right_click)
     global_state.root.bind('<Delete>', lambda event: delete_selected_event())
+
+
+

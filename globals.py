@@ -19,6 +19,7 @@ class GlobalState:
         self.start_time = None
         self.loop_state = False
         self.progress_frame = None
+        self.time_display_label = None
 
     def initialize_tkinter_variables(self, root):
         self.root = root
