@@ -3,7 +3,7 @@ from tkinter import ttk
 from PIL import Image, ImageTk
 from globals import global_state
 from simple_autoclicker_event_handlers import toggle_to_simple_autoclicker, start_countdown, stop_autoclicker
-from advanced_autoclicker_event_handlers import delete_selected_event, start_recording, stop_recording, play_macro, pause_macro, stop_macro, clear_macro, toggle_to_macro_ui, save_macro, save_as, load_macro
+from advanced_autoclicker_event_handlers import update_loop_state, delete_selected_event, start_recording, stop_recording, play_macro, pause_macro, stop_macro, clear_macro, toggle_to_macro_ui, save_macro, save_as, load_macro
 import os
 import sys
 if getattr(sys, 'frozen', False):
@@ -138,7 +138,8 @@ def setup_advanced_autoclicker_ui():
     clear_macro_button.pack(side=tk.LEFT)
 
     # Add Loop Checkbox to the left of the start button
-    loop_checkbox = tk.Checkbutton(playback_frame, text="Loop", variable=global_state.loop_state)
+    loop_var = tk.BooleanVar(value=global_state.loop_state)
+    loop_checkbox = tk.Checkbutton(playback_frame, text="Loop", variable=loop_var, onvalue=True, offvalue=False, command=lambda: update_loop_state(loop_var))
     loop_checkbox.pack(side=tk.LEFT)
 
     # Playback Options Widgets
@@ -147,7 +148,7 @@ def setup_advanced_autoclicker_ui():
     stop_icon = load_icon('./assets/stop.png')
     start_button = tk.Button(playback_frame, image=start_icon, command=lambda:play_macro(start_button))
     pause_button = tk.Button(playback_frame, image=pause_icon, command=lambda:pause_macro(pause_button))
-    stop_button = tk.Button(playback_frame, image=stop_icon, command=lambda:stop_macro(start_button))
+    stop_button = tk.Button(playback_frame, image=stop_icon, command=lambda:stop_macro(start_button, pause_button))
     start_button.pack(side=tk.LEFT)
     pause_button.pack(side=tk.LEFT)
     stop_button.pack(side=tk.LEFT)
@@ -165,8 +166,9 @@ def setup_advanced_autoclicker_ui():
     global_state.events_listbox = action_text
 
     #Toggle button
-    footer_frame = tk.Frame(main_frame)
+    footer_frame = tk.Frame(main_frame, height=50)
     footer_frame.pack(side='bottom', fill='x', expand=False, padx=5, pady=5) 
+    footer_frame.pack_propagate(False)
     toggle_button = tk.Button(footer_frame, text="Toggle to Simple Autoclicker", command=toggle_to_simple_autoclicker)
     toggle_button.pack() 
 

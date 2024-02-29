@@ -121,25 +121,30 @@ def play_macro(start_button):
         start_button.config(state="disabled")
         if global_state.events:
             global_state.playback_running = True
-            for event in global_state.events:
-                start_time = time.time()
-                if not global_state.playback_running:
-                    break
-                event_type, *args, timestamp = event
-                while time.time() < start_time + (timestamp - global_state.events[0][-1]):
-                    while global_state.paused:
-                        time.sleep(0.01)
-                    if not global_state.playback_running:  # Check again in case stop was pressed during wait
+
+
+            while True: #Do while loop for loop_state variable
+                for event in global_state.events:
+                    start_time = time.time()
+                    if not global_state.playback_running:
                         break
-                    time.sleep(0.01)  # Sleep briefly to wait for the right time to trigger the event
-                if not global_state.playback_running:  # Exit if playback has been stopped
+                    event_type, *args, timestamp = event
+                    while time.time() < start_time + (timestamp - global_state.events[0][-1]):
+                        while global_state.paused and global_state.playback_running:
+                            time.sleep(0.01)
+                        if not global_state.playback_running:  # Check again in case stop was pressed during wait
+                            break
+                        time.sleep(0.01)  # Sleep briefly to wait for the right time to trigger the event
+                    if not global_state.playback_running:  # Exit if playback has been stopped
+                        break
+                    if event_type == 'mousedown':
+                        pyautogui.mouseDown(x=args[0], y=args[1], button=args[2])
+                    elif event_type == 'mouseup':
+                        pyautogui.mouseUp(x=args[0], y=args[1], button=args[2])
+                    elif event_type == 'press':
+                        pyautogui.press(args[0])
+                if not global_state.loop_state or not global_state.playback_running: #leave do while loop if loop_state = false
                     break
-                if event_type == 'mousedown':
-                    pyautogui.mouseDown(x=args[0], y=args[1], button=args[2])
-                elif event_type == 'mouseup':
-                    pyautogui.mouseUp(x=args[0], y=args[1], button=args[2])
-                elif event_type == 'press':
-                    pyautogui.press(args[0])
             global_state.playback_running = False
         start_button.config(state="normal")
         start_button.config(relief="raised")
@@ -147,11 +152,13 @@ def play_macro(start_button):
 
     threading.Thread(target=macro).start() 
 
-def stop_macro(start_button):
+def stop_macro(start_button, pause_button):
     print("stopped")
     global_state.progress_frame.pack_forget()
     global_state.playback_running = False
     start_button.config(state="normal")
+    global_state.paused = False
+    pause_button.config(relief="raised")
 
 def pause_macro(pause_button):
     # Toggle the paused state
@@ -204,3 +211,6 @@ def delete_selected_event():
         global_state.events_listbox.delete(index)  # Delete from listbox view
         print(f"Event {index + 1} deleted")
 
+def update_loop_state(loop_var):
+    # Update the global loop_state based on the checkbox's BooleanVar value
+    global_state.loop_state = loop_var.get()
