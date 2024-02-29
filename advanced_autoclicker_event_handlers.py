@@ -8,13 +8,13 @@ import tkinter as tk
 from tkinter import filedialog
 
 
-def toggle_to_simple_autoclicker(start_button, pause_button):
+def toggle_to_simple_autoclicker():
     global_state.advanced_ui_frame.pack_forget()
     global_state.simple_ui_frame.pack(side='top', fill='both', expand=True, padx=5, pady=5)
     global_state.root.minsize(200, 200)
     global_state.root.maxsize(200, 200)
     global_state.root.geometry("200x200")
-    stop_macro(start_button, pause_button)
+    stop_macro()
 
 def clear_macro():
     global_state.events.clear()
@@ -116,10 +116,10 @@ def refresh_listbox():
             global_state.events_listbox.insert(tk.END, convert_to_readable_text(event, event_number))
             event_number+=1
 
-def play_macro(start_button, progress_value, max_progress_value, timer, progress_bar, progress_display_label):
+def play_macro(progress_value, max_progress_value, progress_bar, progress_display_label):
     def macro():
         global_state.progress_frame.pack(side='bottom', fill='x', expand=False, padx=5, pady=5)
-        start_button.config(relief="sunken", state="disabled")
+        global_state.start_button.config(relief="sunken", state="disabled")
         if global_state.events:
             global_state.playback_running = True
             total_events = len(global_state.events)
@@ -127,11 +127,11 @@ def play_macro(start_button, progress_value, max_progress_value, timer, progress
             progress_bar.configure(maximum=max_progress_value.get())
             # Initialize the timer
             
-            timer.start()
+            global_state.timer.start()
 
             while True: #Do while loop for loop_state variable
                 event_counter = 0
-                timer.reset()
+                global_state.timer.reset()
 
                 for event in global_state.events:
                     event_start_time = time.time()
@@ -162,33 +162,32 @@ def play_macro(start_button, progress_value, max_progress_value, timer, progress
                 if not global_state.loop_state or not global_state.playback_running: #leave do while loop if loop_state = false
                     break
             global_state.playback_running = False
-            timer.stop()
-        start_button.config(state="normal")
-        start_button.config(relief="raised")
+            global_state.timer.stop()
+        global_state.start_button.config(state="normal", relief="raised")
         global_state.progress_frame.pack_forget()
 
     threading.Thread(target=macro).start() 
 
-def stop_macro(start_button, pause_button):
+def stop_macro():
     print("stopped")
     global_state.progress_frame.pack_forget()
     global_state.playback_running = False
-    start_button.config(state="normal")
+    global_state.start_button.config(state="normal")
     global_state.paused = False
-    pause_button.config(relief="raised")
+    global_state.pause_button.config(relief="raised")
 
-def pause_macro(pause_button, timer):
+def pause_macro():
     # Toggle the paused state
     global_state.paused = not global_state.paused
     
     if global_state.paused:
         # Change the button's appearance to look "pressed"
-        pause_button.config(relief="sunken")
-        timer.pause()
+        global_state.pause_button.config(relief="sunken")
+        global_state.timer.pause()
     else:
         # Revert the button's appearance to look "normal"
-        pause_button.config(relief="raised")
-        timer.resume()
+        global_state.pause_button.config(relief="raised")
+        global_state.timer.resume()
 
 def save_macro(filename='default_macro.fclicks'):
     with open(filename, 'w') as file:

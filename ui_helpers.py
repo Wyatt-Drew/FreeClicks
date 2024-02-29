@@ -154,12 +154,16 @@ def setup_advanced_autoclicker_ui():
     start_icon = load_icon('./assets/start.png')
     pause_icon = load_icon('./assets/pause.png')
     stop_icon = load_icon('./assets/stop.png')
-    start_button = tk.Button(playback_frame, image=start_icon, command=lambda:play_macro(start_button, progress_value, max_progress_value, timer, progress_bar, progress_display_label))
-    pause_button = tk.Button(playback_frame, image=pause_icon, command=lambda:pause_macro(pause_button, timer))
-    stop_button = tk.Button(playback_frame, image=stop_icon, command=lambda:stop_macro(start_button, pause_button))
+    start_button = tk.Button(playback_frame, image=start_icon, command=lambda:play_macro(progress_value, max_progress_value, progress_bar, progress_display_label))
+    pause_button = tk.Button(playback_frame, image=pause_icon, command=lambda:pause_macro())
+    stop_button = tk.Button(playback_frame, image=stop_icon, command=lambda:stop_macro())
     start_button.pack(side=tk.LEFT)
     pause_button.pack(side=tk.LEFT)
     stop_button.pack(side=tk.LEFT)
+
+    #save buttons globaly that are needed in other functions
+    global_state.start_button = start_button
+    global_state.pause_button = pause_button
 
     # Logo in the center frame
     logo_photo = load_icon('./assets/logo.png', (50, 50))
@@ -177,7 +181,7 @@ def setup_advanced_autoclicker_ui():
     footer_frame = tk.Frame(main_frame, height=50)
     footer_frame.pack(side='bottom', fill='x', expand=False, padx=5, pady=5) 
     footer_frame.pack_propagate(False)
-    toggle_button = tk.Button(footer_frame, text="Toggle to Simple Autoclicker", command=lambda: toggle_to_simple_autoclicker(start_button, pause_button))
+    toggle_button = tk.Button(footer_frame, text="Toggle to Simple Autoclicker", command=lambda: toggle_to_simple_autoclicker())
     toggle_button.pack() 
 
     #Progress bar
@@ -190,7 +194,7 @@ def setup_advanced_autoclicker_ui():
     global_state.time_display_label = time_display_label
     # Instantiate Timer
     timer = Timer(lambda elapsed_str: global_state.root.after(0, lambda: global_state.time_display_label.config(text=elapsed_str)))
-
+    global_state.timer = timer
     # Progress Variable
     progress_value = tk.IntVar(value=10)  # Variable to hold the current progress
     max_progress_value = tk.IntVar(value=100)  # Variable to hold the maximum progress value
